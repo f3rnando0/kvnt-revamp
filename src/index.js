@@ -1,6 +1,6 @@
 import fs from 'fs';
 import database from './database/index.js';
-import { error } from './utils/logger.js';
+import { error, ok } from './utils/logger.js';
 import { Telegraf } from 'telegraf';
 import { token } from './config/bot.js';
 import { config } from './config/app.js';
@@ -29,6 +29,7 @@ try {
   config.listeningEvents.forEach((event) => {
     events.map((fileName) => {
       if (fileName === event) {
+        ok(`EVENT: ${event} - loaded.`);
         bot.on(event, async (...args) => {
           const imported = await import(`./app/events/${fileName}/index.js`);
 
