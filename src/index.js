@@ -10,7 +10,7 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 process.on('uncaughtException', function (e) {
-  error(`${e.name} - ${e.message}`);
+  console.log(e)
 });
 
 try {

@@ -11,6 +11,10 @@ const files = fs
   .filter((file) => file.endsWith('.js'));
 const commands = files.map((file) => file.replace('.js', ''));
 
+const statesFiles = fs
+  .readdirSync(path.join(__dirname + '../../states'))
+  .filter((file) => file.endsWith('.js'));
+
 export default {
   async execute(context) {
     const ctx = context[0];
@@ -41,11 +45,24 @@ export default {
               });
             }
           } else {
-            config.inputCommands.some((commandArray, index) => {
-              if(commandArray.includes(ctx.update.message.text)) {
-                console.log(commandArray, index)
+            if (user.lastState === 'none') {
+              config.inputCommands.map(async (commandArray) => {
+                if (commandArray.includes(ctx.update.message.text)) {
+                  const index = commandArray.indexOf(ctx.update.message.text);
+                  const imported = await import(
+                    `../../commands/inputCommands/index.js`
+                  );
+
+                  imported.default.execute(commandArray, index, ctx, user);
+                }
+              });
+            } else {
+              if (user.lastState.match('rows')) {
+              } else {
+                const imported = await import(`../states/search_state.js`);
+                imported.default.execute(ctx, user);
               }
-            })
+            }
           }
         }
       } else {
