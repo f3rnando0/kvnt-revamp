@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import { prices } from '../../config/prices.js';
 import User from '../../database/models/User.js';
 import { rows } from '../../config/rows.js';
+import { getPlanName } from '../../utils/getPlanName.js';
 
 export class UserService {
   constructor(id) {
@@ -133,6 +134,20 @@ export class UserService {
       } else {
         return null;
       }
+    } else if (flow === 'search') {
+      if (!user.subscription.subscribed) return null;
+      if (dayjs().isAfter(user.subscription.expiresAt)) return null;
+
+      if (amount > rows[getPlanName(user.subscription.subscriptionType)])
+        return null;
+      const newAmount = user.rowsTotalDaily - amount
+      if (newAmount > user.rowsTotalDaily) return null;
+
+      user.rowsTotalDaily = user.rowsTotalDaily - amount;
+      user.rowsTotal = user.rowsTotal + amount;
+      user.lastState = 'none';
+      await user.save();
+      return user;
     }
   }
 

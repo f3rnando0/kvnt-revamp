@@ -12,6 +12,8 @@ export default {
         `Não foi possível localizar o seu usuário na database.`
       );
 
+    await userService.changeState('none');
+
     if (user.preferredLanguage === 'portuguese') {
       const MAIN_MENU = Markup.keyboard([
         ['💻 Planos', '🔍 Consultar'],

@@ -58,6 +58,8 @@ export default {
               });
             } else {
               if (user.lastState.match('rows')) {
+                const imported = await import(`../states/search_rows_state.js`);
+                imported.default.execute(ctx, user);
               } else {
                 const imported = await import(`../states/search_state.js`);
                 imported.default.execute(ctx, user);
