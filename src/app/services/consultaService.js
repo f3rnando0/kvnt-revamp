@@ -26,13 +26,14 @@ export class ConsultaService {
     return consultas;
   }
 
-  async findLastestByDateAndKeyword(keyword) {
+  async findLastestByDateAndKeyword(userId, keyword) {
     const lastest = await Consulta.find()
       .where('keyword')
       .equals(keyword)
       .where('userId')
-      .equals(this.id)
-      .sort({ createdAt: -1 });
+      .equals(userId)
+      .sort({ createdAt: -1 })
+      .limit(1)
 
     return lastest;
   }

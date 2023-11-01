@@ -47,10 +47,16 @@ export default {
 
         if (!buy)
           return await ctx.reply(
-            `Não foi possível comprar o plano Initial. Tente novamente.`
+            args[2] === 'br'
+              ? `Não foi possível comprar o plano Initial. Tente novamente.`
+              : `Unable to buy plan Initial. Try again.`
           );
 
-        await ctx.reply(`Você comprou o plano Initial com sucesso.`);
+        await ctx.reply(
+          args[2] === 'br'
+            ? `Você comprou o plano Initial com sucesso.`
+            : `You've sucessfully bought plan Initial.`
+        );
 
         return await ctx.answerCbQuery();
       }
@@ -83,10 +89,16 @@ export default {
 
         if (!buy)
           return await ctx.reply(
-            `Não foi possível comprar o plano Classic. Tente novamente.`
+            args[2] === 'br'
+              ? `Não foi possível comprar o plano Classic. Tente novamente.`
+              : `Unable to buy plan Classic. Try again.`
           );
 
-        await ctx.reply(`Você comprou o plano Classic com sucesso.`);
+        await ctx.reply(
+          args[2] === 'br'
+            ? `Você comprou o plano Classic com sucesso.`
+            : `You've successfully bought plan Classic.`
+        );
 
         return await ctx.answerCbQuery();
       }
@@ -119,10 +131,16 @@ export default {
 
         if (!buy)
           return await ctx.reply(
-            `Não foi possível comprar o plano VIP. Tente novamente.`
+            args[2] === 'br'
+              ? `Não foi possível comprar o plano VIP. Tente novamente.`
+              : `Unable to buy plan VIP. Try again.`
           );
 
-        await ctx.reply(`Você comprou o plano VIP com sucesso.`);
+        await ctx.reply(
+          args[2] === 'br'
+            ? `Você comprou o plano VIP com sucesso.`
+            : `You've sucessfully bought plan VIP.`
+        );
 
         return await ctx.answerCbQuery();
       }
@@ -155,10 +173,16 @@ export default {
 
         if (!buy)
           return await ctx.reply(
-            `Não foi possível comprar o plano Primordial. Tente novamente.`
+            args[2] === 'br'
+              ? `Não foi possível comprar o plano Primordial. Tente novamente.`
+              : `Unable to buy plan Primordial. Try again.`
           );
 
-        await ctx.reply(`Você comprou o plano Primordial com sucesso.`);
+        await ctx.reply(
+          args[2] === 'br'
+            ? `Você comprou o plano Primordial com sucesso.`
+            : `You've sucessfully bought plan Primordial.`
+        );
 
         return await ctx.answerCbQuery();
       }
@@ -191,10 +215,16 @@ export default {
 
         if (!buy)
           return await ctx.reply(
-            `Não foi possível comprar o plano Business. Tente novamente.`
+            args[2] === 'br'
+              ? `Não foi possível comprar o plano Business. Tente novamente.`
+              : `Unable to buy plan Business. Try again.`
           );
 
-        await ctx.reply(`Você comprou o plano Business com sucesso.`);
+        await ctx.reply(
+          args[2] === 'br'
+            ? `Não foi possível comprar o plano Business. Tente novamente.`
+            : `Unable to buy plan Business. Try again.`
+        );
 
         return await ctx.answerCbQuery();
       }
@@ -227,10 +257,16 @@ export default {
 
         if (!buy)
           return await ctx.reply(
-            `Não foi possível comprar o plano Professional. Tente novamente.`
+            args[2] === 'br'
+              ? `Não foi possível comprar o plano Professional. Tente novamente.`
+              : `Unable to buy plan Professional. Try again.`
           );
 
-        await ctx.reply(`Você comprou o plano Professional com sucesso.`);
+        await ctx.reply(
+          args[2] === 'br'
+            ? `Você comprou o plano Professional com sucesso.`
+            : `You've sucessfully bought plan Professional.`
+        );
 
         return await ctx.answerCbQuery();
       }
@@ -263,10 +299,16 @@ export default {
 
         if (!buy)
           return await ctx.reply(
-            `Não foi possível comprar o plano Maximum. Tente novamente.`
+            args[2] === 'br'
+              ? `Não foi possível comprar o plano Maximum. Tente novamente.`
+              : `Unable to buy plan Maximum. Try again.`
           );
 
-        await ctx.reply(`Você comprou o plano Maximum com sucesso.`);
+        await ctx.reply(
+          args[2] === 'br'
+            ? `Você comprou o plano Maximum com sucesso.`
+            : `You've sucessfully bought plan Maximum.`
+        );
 
         return await ctx.answerCbQuery();
       }

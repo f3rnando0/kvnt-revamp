@@ -48,14 +48,18 @@ export class UserService {
     if (!user) return null;
 
     if (user.admin) {
-      const searchedUser = await this.findById(id);
+      const searchedUser = await User.findOne({ _id: id });
 
       if (!searchedUser) return null;
 
       if (currency === 'brl') {
-        searchedUser.balance.brl = searchedUser.balance.brl + amount;
+        searchedUser.balance.brl.amount = searchedUser.balance.brl.amount + amount;
+        await searchedUser.save();
+        return searchedUser;
       } else if (currency === 'usd') {
-        searchedUser.balance.usd = searchedUser.balance.usd + amount;
+        searchedUser.balance.usd.amount = searchedUser.balance.usd.amount + amount;
+        await searchedUser.save();
+        return searchedUser;
       } else {
         return null;
       }
@@ -140,12 +144,20 @@ export class UserService {
 
       if (amount > rows[getPlanName(user.subscription.subscriptionType)])
         return null;
-      const newAmount = user.rowsTotalDaily - amount
+      const newAmount = user.rowsTotalDaily - amount;
       if (newAmount > user.rowsTotalDaily) return null;
 
       user.rowsTotalDaily = user.rowsTotalDaily - amount;
       user.rowsTotal = user.rowsTotal + amount;
       user.lastState = 'none';
+      await user.save();
+      return user;
+    } else if (flow === 'dailyReset') {
+      if (amount > rows[getPlanName(user.subscription.subscriptionType)])
+        return;
+      user.rowsTotalDaily =
+        rows[getPlanName(user.subscription.subscriptionType)];
+      user.rowsTotalDailyDateReset = dayjs().add('1', 'day');
       await user.save();
       return user;
     }
@@ -159,5 +171,48 @@ export class UserService {
     user.lastState = state;
     await user.save();
     return user;
+  }
+
+  async handleResetDailyRows() {
+    const user = await User.findOne({ _id: this.id });
+    if (!user) return;
+
+    if (user.subscription.subscribed) {
+      if (dayjs().isAfter(user.subscription.expiresAt)) {
+        user.subscription.subscribed = false;
+        user.subscription.expiresAt = null;
+        user.subscription.subscriptionType = 0;
+        user.rowsTotalDailyDateReset = null;
+        user.rowsTotalDaily = 0;
+        await user.save();
+        return;
+      } else {
+        if (dayjs().isAfter(user.rowsTotalDailyDateReset)) {
+          const name = getPlanName(user.subscription.subscriptionType);
+          const amount = rows[name];
+          await this.modifyDailyRows('dailyReset', amount);
+        } else {
+          return;
+        }
+      }
+    } else {
+      return;
+    }
+  }
+
+  async blacklist(id) {
+    const user = await User.findOne({ _id: id });
+
+    if (!user) return null;
+    
+    if (user.blacklisted) {
+      user.blacklisted = false;
+      await user.save();
+      return false;
+    } else {
+      user.blacklisted = true;
+      await user.save();
+      return true;
+    }
   }
 }

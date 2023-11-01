@@ -10,7 +10,7 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 process.on('uncaughtException', function (e) {
-  console.log(e)
+  console.log(e);
 });
 
 try {
@@ -22,7 +22,9 @@ try {
     error(err.message);
   });
 
-  bot.launch();
+  bot.launch().then(() => {
+    bot.startPolling();
+  });
 
   const events = fs.readdirSync(path.join(__dirname + '/app/events'));
 

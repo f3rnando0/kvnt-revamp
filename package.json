@@ -5,7 +5,8 @@
   "main": "./src/index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon --ignore node_modules ./src/index.js"
+    "dev": "nodemon --ignore node_modules ./src/index.js",
+    "start": "pm2 start ./src/index.js --name bot -i 0"
   },
   "keywords": [],
   "author": "",

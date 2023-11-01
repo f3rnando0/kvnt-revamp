@@ -14,50 +14,71 @@ export default {
     if (args[1] === 'domain') {
       if (!domainRegex.test(ctx.update.message.text))
         return await ctx.reply(
-          `O domínio fornecido é inválido. Tente novamente!`
+          args[2] === 'br'
+            ? `O domínio fornecido é inválido. Tente novamente!`
+            : `Invalid domain. Try again!`
         );
     } else if (args[1] === 'username') {
       if (!usernameRegex.test(ctx.update.message.text))
         return await ctx.reply(
-          `O username fornecido é inválido. Tente novamente!`
+          args[2] === 'br'
+            ? `O username fornecido é inválido. Tente novamente!`
+            : `Invalid username. Try again!`
         );
     } else if (args[1] === 'password') {
       if (!passwordRegex.test(ctx.update.message.text))
         return await ctx.reply(
-          `A password fornecida é inválida. Tente novamente!`
+          args[2] === 'br'
+            ? `A password fornecida é inválida. Tente novamente!`
+            : `Invalid password. Try again!`
         );
     }
 
     const consultaService = new ConsultaService(ctx.from.id);
 
     const last = await consultaService.findLastestByDateAndKeyword(
+      user._id,
       ctx.update.message.text
     );
 
     if (last.length > 0) {
-      const range = last.range.split('-')
+      const range = last[0].range.split('-');
+      await userService.changeState(
+        `search_${args[1]}_rows_${args[2]}_state-${ctx.update.message.text}`
+      );
       return await ctx.sendMessage(
-        `Foi identificada uma consulta antiga que vai da linha **${range[0]}** até ${range[1]} do/da ${args[1]}. Gostaria de retirar essas linhas de sua nova consulta?`,
+        args[2] === 'br'
+          ? `Foi identificada uma consulta antiga que vai da linha *${
+              range[0]
+            }* até *${range[1]}* ${
+              args[1] === 'domain' || 'username' ? 'do' : 'da'
+            } ${
+              args[1]
+            }\\. \nGostaria de retirar essas linhas de sua nova consulta?`
+          : `An old search was identified, going through line *${range[0]}* to *${range[1]}* of the ${args[1]}\\. \nWould you like to slice this rows of your new search?`,
         {
           reply_markup: {
             inline_keyboard: [
               [
                 {
-                  text: `👍 Sim`,
-                  callback_data: `dr_rows_${args[1]}_${args[2]}`,
+                  text: args[2] === 'br' ? `👍 Sim` : `👍 Yes`,
+                  callback_data: `dr_${args[1]}_${args[2]}_accept`,
                 },
                 {
-                  text: `👎 Não`,
-                  callback_data: `dr_rows_${args[1]}_${args[2]}`,
+                  text: args[2] === 'br' ? `👎 Não` : `👎 No`,
+                  callback_data: `dr_${args[1]}_${args[2]}_refuse`,
                 },
               ],
             ],
           },
+          parse_mode: 'MarkdownV2',
         }
       );
     } else {
       await ctx.sendMessage(
-        `A consulta na database foi iniciada com sucesso! Os resultados serão enviados para você em breve.`
+        args[2] === 'br'
+          ? `A consulta na database foi iniciada com sucesso! Os resultados serão enviados para você em breve.`
+          : `You have successfully started the search, you will receive the results soon.`
       );
 
       const req = await fetch(
@@ -78,10 +99,14 @@ export default {
 
       if (res) {
         if (res.message === 'Query realizada com sucesso.') {
-          await userService.changeState(`search_${args[1]}_rows_${args[2]}_state-${ctx.update.message.text}`)
+          await userService.changeState(
+            `search_${args[1]}_rows_${args[2]}_state-${ctx.update.message.text}`
+          );
           if (res.data.length < user.rowsTotalDaily) {
             await ctx.sendMessage(
-              `Consulta finalizada com sucesso!\n\nFormato: "url - quantidade total de linhas que você pode pegar hoje / total de resultados encontrados na database"`,
+              args[2] === 'br'
+                ? `Consulta finalizada com sucesso!\n\nFormato: "url - quantidade total de linhas que você pode pegar hoje / total de resultados encontrados na database"`
+                : `Search completed successfully!\n\nFormat: request - number of rows available to you today / total rows in the database`,
               {
                 reply_markup: {
                   inline_keyboard: [
@@ -97,7 +122,9 @@ export default {
             );
           } else {
             await ctx.sendMessage(
-              `Consulta finalizada com sucesso!\n\nFormato: "url - quantidade total de linhas que você pode pegar hoje / total de resultados encontrados na database"`,
+              args[2] === 'br'
+                ? `Consulta finalizada com sucesso!\n\nFormato: "url - quantidade total de linhas que você pode pegar hoje / total de resultados encontrados na database"`
+                : `Search completed successfully!\n\nFormat: request - number of rows available to you today / total rows in the database`,
               {
                 reply_markup: {
                   inline_keyboard: [
@@ -115,7 +142,8 @@ export default {
         } else if (res.message === 'Nenhum resultado encontrado.') {
           await userService.changeState('none');
           return await ctx.reply(
-            `Nenhum resultado encontrado para esta keyword.`
+            args[2] === 'br' ? `Nenhum resultado encontrado para esta keyword.`
+            : `No results find to this keyword.`
           );
         }
       }

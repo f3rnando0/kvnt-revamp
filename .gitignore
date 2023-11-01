@@ -3,3 +3,4 @@ src/config/app.js
 src/config/bot.js
 package-lock.json
 ideas.todo
+/src/files

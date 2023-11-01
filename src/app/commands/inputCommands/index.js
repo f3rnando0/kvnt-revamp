@@ -53,18 +53,6 @@ export default {
         imported.default.execute(ctx, array[index], user);
         break;
       }
-      case '⭐️ Join our channel!': {
-        const imported = await import(`./inputs/channel.js`);
-
-        imported.default.execute(ctx, array[index], user);
-        break;
-      }
-      case '⭐️ Entre no nosso canal!': {
-        const imported = await import(`./inputs/channel.js`);
-
-        imported.default.execute(ctx, array[index], user);
-        break;
-      }
     }
   },
 };

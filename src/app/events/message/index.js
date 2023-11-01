@@ -11,16 +11,13 @@ const files = fs
   .filter((file) => file.endsWith('.js'));
 const commands = files.map((file) => file.replace('.js', ''));
 
-const statesFiles = fs
-  .readdirSync(path.join(__dirname + '../../states'))
-  .filter((file) => file.endsWith('.js'));
-
 export default {
   async execute(context) {
     const ctx = context[0];
 
     if (!ctx.from.is_bot) {
       const userService = new UserService(ctx.from.id);
+      await userService.handleResetDailyRows();
 
       const user = await userService.find();
       if (user) {
@@ -35,7 +32,7 @@ export default {
             if (ctx.message.entities[0].type === 'bot_command') {
               commands.map(async (command, index) => {
                 const inputCommand = ctx.update.message.text.replace('/', '');
-                if (command === inputCommand) {
+                if (inputCommand.match(command)) {
                   const imported = await import(
                     `../../commands/${files[index]}`
                   );
@@ -43,9 +40,22 @@ export default {
                   imported.default.execute(ctx);
                 }
               });
+            } else if (ctx.message.entities[0].type === 'url') {
+              if (user.lastState.match('search')) {
+                const imported = await import(`../states/search_state.js`);
+                imported.default.execute(ctx, user);
+              }
             }
           } else {
             if (user.lastState === 'none') {
+              if (ctx.update.message.text === '⭐ Entre no nosso canal!') {
+                return await ctx.reply(`https://t.me/kvntsearch`);
+              }
+
+              if (ctx.update.message.text === '⭐️ Join our channel!') {
+                return await ctx.reply(`https://t.me/kvntsearch`);
+              }
+
               config.inputCommands.map(async (commandArray) => {
                 if (commandArray.includes(ctx.update.message.text)) {
                   const index = commandArray.indexOf(ctx.update.message.text);

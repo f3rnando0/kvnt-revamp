@@ -38,7 +38,7 @@ export default {
     } else {
       const hasFile = await consultaService.findOne(args[1]);
       if (!hasFile)
-        return await ctx.reply(`Não foi possível encontrar este arquivo.`);
+        return await ctx.reply(args[2] === 'br' ? `Não foi possível encontrar este arquivo.` : `Unable to find this file.`);
       await ctx.replyWithDocument(`${hasFile.files.withDomain}`, {
         filename: `${hasFile.keyword}_${hasFile.range.split('-')[1]}.txt`,
       });
