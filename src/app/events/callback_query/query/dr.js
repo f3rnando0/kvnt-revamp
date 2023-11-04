@@ -11,8 +11,6 @@ export default {
 
     const input = user.lastState.split('-');
 
-    console.log(args);
-
     if (!user)
       return await ctx.reply(
         args[2] === 'br'

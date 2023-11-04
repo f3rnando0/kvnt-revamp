@@ -53,11 +53,13 @@ export class UserService {
       if (!searchedUser) return null;
 
       if (currency === 'brl') {
-        searchedUser.balance.brl.amount = searchedUser.balance.brl.amount + amount;
+        searchedUser.balance.brl.amount =
+          searchedUser.balance.brl.amount + amount;
         await searchedUser.save();
         return searchedUser;
       } else if (currency === 'usd') {
-        searchedUser.balance.usd.amount = searchedUser.balance.usd.amount + amount;
+        searchedUser.balance.usd.amount =
+          searchedUser.balance.usd.amount + amount;
         await searchedUser.save();
         return searchedUser;
       } else {
@@ -146,6 +148,7 @@ export class UserService {
         return null;
       const newAmount = user.rowsTotalDaily - amount;
       if (newAmount > user.rowsTotalDaily) return null;
+      if (newAmount < 0) return null;
 
       user.rowsTotalDaily = user.rowsTotalDaily - amount;
       user.rowsTotal = user.rowsTotal + amount;
@@ -204,7 +207,7 @@ export class UserService {
     const user = await User.findOne({ _id: id });
 
     if (!user) return null;
-    
+
     if (user.blacklisted) {
       user.blacklisted = false;
       await user.save();

@@ -3,8 +3,6 @@ import { UserService } from '../../../services/userService.js';
 export default {
   async execute(ctx) {
     const args = ctx.update.callback_query.data.split('_');
-    console.log(args)
-
     const userService = new UserService(ctx.from.id);
     const user = await userService.find();
 
